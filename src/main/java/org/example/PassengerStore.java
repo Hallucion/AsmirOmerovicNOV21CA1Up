@@ -55,6 +55,26 @@ public class PassengerStore {
         }
     }
 
+    public void addPassenger (String name, String email, String phone, double latitude, double longitude)
+    {
+        passengerList.add(new Passenger(name, email, phone, latitude,longitude));
+    }
+
+    public Passenger findPassengerByName(String name)
+    {
+        for (Passenger p : passengerList)
+        {
+            if (p.getName().equals(name))
+            {
+                return p;
+            }
+        }
+        return null;
+    }
+
+    public void addPassenger(Passenger p) {
+    }
+
     // TODO - see functional spec for details of code to add
 
 } // end class

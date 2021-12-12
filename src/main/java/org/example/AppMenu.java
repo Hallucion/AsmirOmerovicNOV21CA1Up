@@ -1,5 +1,6 @@
 package org.example;
 
+import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.InputMismatchException;
@@ -131,21 +132,24 @@ public class AppMenu
 
     // Sub-Menu for Passenger operations
     //
-    private void displayPassengerMenu()
+    private void displayPassengerMenu() throws IOException
     {
         final String MENU_ITEMS = "\n*** PASSENGER MENU ***\n"
                 + "1. Show all Passengers\n"
                 + "2. Add new Passenger\n"
                 + "3. Find Passenger by Name\n"
-                + "4. Exit\n"
-                + "Enter Option [1,4]";
+                + "4. Delete A Passenger\n"
+                + "5. Exit\n"
+                + "Enter Option [1,5]";
 
         final int SHOW_ALL = 1;
         final int NEW_PASSENGER = 2;
         final int FIND_BY_NAME = 3;
-        final int EXIT = 4;
+        final int DELETE_BOOKING = 4;
+        final int EXIT = 5;
 
         Scanner keyboard = new Scanner(System.in);
+        FileWriter write = new FileWriter("passengers.txt", true);
         int option = 0;
         Passenger p;
         do
@@ -163,11 +167,48 @@ public class AppMenu
                         break;
                     case NEW_PASSENGER:
                         System.out.println("Add a passenger");
-//                        System.out.println("Enter new passenger details:");
-//                      hardcoded data to show system working
-                        p = new Passenger("Ivan Kiev", "ivan2222@icloud.com",
-                                "085-2222322", 53.1234, -6.0222);
-                        passengerStore.addPassenger(p);
+                        System.out.println("Enter new passenger details:");
+                        boolean check = false;
+                        while (check == false) {
+                            System.out.println("What Is Your Name Fam");
+                            String Name = keyboard.nextLine();
+                            System.out.println("What Is Your Email Fam");
+                            String Email = keyboard.next();
+                            System.out.println("What Is Your Phone Fam");
+                            String Phone = keyboard.next();
+                            System.out.println("What Is Your Lat Fam");
+                            Double Latitude = keyboard.nextDouble();
+                            System.out.println("What Is Your Long Fam");
+                            Double Longitude = keyboard.nextDouble();
+                            Passenger Fam = new Passenger(Name, Email, Phone, Latitude, Longitude);
+                            passengerStore.getAllPassengers().add(Fam);
+
+                            String textHolder;
+                            textHolder = String.valueOf(Fam.getId()) + ",";
+                            textHolder += Fam.getName() + ",";
+                            textHolder += Fam.getEmail() + ",";
+                            textHolder += Fam.getPhone() + ",";
+                            textHolder += String.valueOf(Fam.getLocation().getLatitude()) + ",";
+                            textHolder += String.valueOf(Fam.getLocation().getLongitude());
+                            if (check == false) {
+                                if (passengerStore.getAllPassengers().toString().contains(Fam.getEmail()) || passengerStore.getAllPassengers().toString().contains(Fam.getName())) {
+                                    System.out.println("You have inputed a duplicate email or name, pulling you back to the menu");
+                                    //  You could do 2 if's with  both OR's seperated to distinguish whether email OR name is invalid directly
+                                } else {
+                                    System.out.println("Adding you to the system.");
+                                    write.write("\r" + textHolder);
+                                    write.close();
+                                    System.out.println(passengerStore.getAllPassengers());
+                                    System.out.println("Reciept: " + Fam);
+                                    break;
+                                }
+                            }
+                        }
+                        System.out.println(passengerStore.getAllPassengers().toString());
+                        break;
+                    case DELETE_BOOKING:
+                        System.out.println("Delete Booking");
+                        bookingManager.deletebyBookingId(1);
                         break;
                     case FIND_BY_NAME:
                         System.out.println("Find Passenger by Name");
@@ -186,7 +227,9 @@ public class AppMenu
                         System.out.print("Invalid option - please enter number in range");
                         break;
                 }
-            } catch (InputMismatchException | NumberFormatException e)
+            }
+
+            catch (InputMismatchException | NumberFormatException e)
             {
                 System.out.print("Invalid option - please enter number in range");
             }

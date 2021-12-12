@@ -72,9 +72,6 @@ public class PassengerStore {
         return null;
     }
 
-    public void addPassenger(Passenger p) {
-    }
-
     // TODO - see functional spec for details of code to add
 
 } // end class
